@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Responsive Form</title>
+
+<!-- BOOTSTRAP -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+
+<!-- SWEETALERT v7 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>
+
+<style>
+body {
+    background-color: #f0f2f5;
+    padding: 15px;
+}
+.form-container {
+    max-width: 550px;
+    margin: auto;
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 15px;
+    background: linear-gradient(-45deg, #ff6ec4, #7873f5, #42e695, #fbc531);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+label { color: #fff; font-weight: 600; }
+h4 { color: #fff; text-align: center; }
+</style>
+</head>
+
+<body>
+
+<div class="form-container">
+<h4 class="mb-4">Form Submission to Google Sheet</h4>
+
+<form id="submit-to-google-sheet">
+
+<!-- PROMOTER -->
+<div class="form-group">
+<label>PROMOTER NAME</label>
+<select class="form-control" id="assignedBy" required>
+<option value="" disabled selected>Select Name</option>
+<option>ARUN</option>
+<option>AVINASH</option>
+<option>AKASH</option>
+<option>CHAKARAVARTHI</option>
+<option>KIRAN</option>
+<option>SHERVESH</option>
+<option>JAYA</option>
+<option>KARTHIKN</option>
+<option>SANJAY</option>
+<option>SHARUKAN</option>
+<option>JAMES</option>
+<option>PARTHI</option>
+</select>
+</div>
+
+<!-- OUTLET -->
+<div class="form-group">
+<label>OUTLET NAME</label>
+<select class="form-control" id="outletName" required>
+<option value="" disabled selected>Select Outlet</option>
+<option>ALANKAR WINES</option>
+<option>SG WINES</option>
+<option>CHEEZ ELLORA</option>
+<option>SRI MURUGAN</option>
+<option>NFL</option>
+<option>COMFED</option>
+<option>CROWN</option>
+<option>MR BRAND</option>
+<option>LAVINYA</option>
+<option>SGL</option>
+<option>WHITETOWN</option>
+<option>VIJAYASARATHI</option>
+<option>BAVANI WINES</option>
+<option>BALAJI ENTERPRISE</option>
+<option>RAJA RAJAN</option>
+<option>VINBROS</option>
+<option>NCB</option>
+</select>
+</div>
+
+<!-- DATE -->
+<div class="form-group">
+<label>DATE</label>
+<input type="date" class="form-control" id="createdDate" required>
+</div>
+
+<!-- DAY -->
+<div class="form-group">
+<label>DAY</label>
+<select class="form-control" id="day" required>
+<option value="" disabled selected>Select Day</option>
+<option>MONDAY</option>
+<option>TUESDAY</option>
+<option>WEDNESDAY</option>
+<option>THURSDAY</option>
+<option>FRIDAY</option>
+<option>SATURDAY</option>
+<option>SUNDAY</option>
+</select>
+</div>
+
+<!-- PAYMENT -->
+<div class="form-group">
+<label>PAYMENT</label>
+<select class="form-control" id="payment" required>
+<option value="" disabled selected>Select Payment</option>
+<option>350</option>
+<option>500</option>
+<option>700</option>
+</select>
+</div>
+
+<button type="submit" class="btn btn-dark btn-block">Submit</button>
+
+</form>
+</div>
+
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbw2SNp9a_p5WjwVNyuWlBsahyFRrI9xCEmzbyxVnfy9NgB_mKHGm_5PCEc7jvuFZGAU/exec";
+
+document.getElementById("submit-to-google-sheet").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("Promoter", document.getElementById("assignedBy").value);
+    formData.append("Outlet", document.getElementById("outletName").value);
+    formData.append("Date", document.getElementById("createdDate").value);
+    formData.append("Day", document.getElementById("day").value);
+    formData.append("Payment", document.getElementById("payment").value);
+
+    fetch(scriptURL, { method: "POST", body: formData })
+        .then(() => {
+            swal("Success", "Submitted Successfully!", "success");
+            document.getElementById("submit-to-google-sheet").reset();
+        })
+        .catch(() => {
+            swal("Error", "Submission Failed", "error");
+        });
+});
+</script>
+
+</body>
+</html>

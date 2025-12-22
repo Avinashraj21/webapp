@@ -94,10 +94,19 @@ h4 { color: #fff; text-align: center; }
 <input type="date" class="form-control" id="createdDate" required>
 </div>
 
-<!-- AUTO DAY -->
+<!-- DAY -->
 <div class="form-group">
 <label>DAY</label>
-<input type="text" class="form-control" id="day" readonly>
+<select class="form-control" id="day" required>
+<option value="" disabled selected>Select Day</option>
+<option>MONDAY</option>
+<option>TUESDAY</option>
+<option>WEDNESDAY</option>
+<option>THURSDAY</option>
+<option>FRIDAY</option>
+<option>SATURDAY</option>
+<option>SUNDAY</option>
+</select>
 </div>
 
 <!-- PAYMENT -->
@@ -117,43 +126,28 @@ h4 { color: #fff; text-align: center; }
 </div>
 
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbzdv_rR7Jd8O3WdhJbUs5Hmd55AVnROdXd2gh6f7Q2asTYyD7epUayXAPDZp-HxttWE/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbz126bPiNsCyYeeyko2W7FvB8QHjlq8O29jzK9qMPsRlrjg-dkakUHai2R4IvHMp286/exec";
 
-document.getElementById("createdDate").addEventListener("change", function () {
-  const d = new Date(this.value);
-  const days = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
-  document.getElementById("day").value = days[d.getDay()];
-});
+document.getElementById("submit-to-google-sheet").addEventListener("submit", e => {
+    e.preventDefault();
 
-document.getElementById("submit-to-google-sheet").addEventListener("submit", function (e) {
-  e.preventDefault();
+    const formData = new FormData();
+    formData.append("Promoter", document.getElementById("assignedBy").value);
+    formData.append("Outlet", document.getElementById("outletName").value);
+    formData.append("Date", document.getElementById("createdDate").value);
+    formData.append("Day", document.getElementById("day").value);
+    formData.append("Payment", document.getElementById("payment").value);
 
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = scriptURL;
-  form.style.display = "none";
-
-  const fields = {
-    Promoter: assignedBy.value,
-    Outlet: outletName.value,
-    Date: createdDate.value,
-    Day: day.value,
-    Payment: payment.value
-  };
-
-  for (let key in fields) {
-    const input = document.createElement("input");
-    input.name = key;
-    input.value = fields[key];
-    form.appendChild(input);
-  }
-
-  document.body.appendChild(form);
-  form.submit();
-
-  swal("Success", "Submitted Successfully!", "success");
-  this.reset();
-  day.value = "";
+    fetch(scriptURL, { method: "POST", body: formData })
+        .then(() => {
+            swal("Success", "Submitted Successfully!", "success");
+            document.getElementById("submit-to-google-sheet").reset();
+        })
+        .catch(() => {
+            swal("Error", "Submission Failed", "error");
+        });
 });
 </script>
 
+</body>
+</html>

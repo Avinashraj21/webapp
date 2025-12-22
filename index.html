@@ -117,37 +117,43 @@ h4 { color: #fff; text-align: center; }
 </div>
 
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbw5NeED2Y-G8yRqedN9hcWkNHIT5NEFUjs_hk9Z2Z11W9eTaoHYF233-_xlAFKcAT1y/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbzdv_rR7Jd8O3WdhJbUs5Hmd55AVnROdXd2gh6f7Q2asTYyD7epUayXAPDZp-HxttWE/exec";
 
-/* AUTO DAY FROM DATE */
 document.getElementById("createdDate").addEventListener("change", function () {
-    const date = new Date(this.value);
-    const days = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
-    document.getElementById("day").value = days[date.getDay()];
+  const d = new Date(this.value);
+  const days = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+  document.getElementById("day").value = days[d.getDay()];
 });
 
-document.getElementById("submit-to-google-sheet").addEventListener("submit", e => {
-    e.preventDefault();
+document.getElementById("submit-to-google-sheet").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("Promoter", document.getElementById("assignedBy").value);
-    formData.append("Outlet", document.getElementById("outletName").value);
-    formData.append("Date", document.getElementById("createdDate").value);
-    formData.append("Day", document.getElementById("day").value);
-    formData.append("Payment", document.getElementById("payment").value);
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = scriptURL;
+  form.style.display = "none";
 
-    fetch(scriptURL, { method: "POST", body: formData })
-        .then(() => {
-            swal("Success", "Submitted Successfully!", "success");
-            document.getElementById("submit-to-google-sheet").reset();
-            document.getElementById("day").value = "";
-        })
-        .catch(() => {
-            swal("Error", "Submission Failed", "error");
-        });
+  const fields = {
+    Promoter: assignedBy.value,
+    Outlet: outletName.value,
+    Date: createdDate.value,
+    Day: day.value,
+    Payment: payment.value
+  };
+
+  for (let key in fields) {
+    const input = document.createElement("input");
+    input.name = key;
+    input.value = fields[key];
+    form.appendChild(input);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+
+  swal("Success", "Submitted Successfully!", "success");
+  this.reset();
+  day.value = "";
 });
 </script>
-
-</body>
-</html>
 
